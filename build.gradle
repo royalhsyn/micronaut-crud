@@ -1,0 +1,61 @@
+plugins {
+    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("io.micronaut.application") version "3.7.10"
+    id("io.micronaut.test-resources") version "3.7.10"
+}
+
+version = "0.1"
+group = "com.example"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    annotationProcessor('org.projectlombok:lombok:1.18.26')
+    annotationProcessor('io.micronaut.data:micronaut-data-processor:3.9.6')
+    annotationProcessor('io.micronaut.serde:micronaut-serde-processor:1.5.2')
+    annotationProcessor "io.micronaut:micronaut-validation:3.4.0"
+    annotationProcessor group: 'org.mapstruct', name: 'mapstruct', version: '1.5.5.Final'
+    annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor', version: '1.5.5.Final'
+    runtimeOnly "org.slf4j:slf4j-simple:1.7.30"
+    implementation "io.micronaut.data:micronaut-data-hibernate-jpa"
+    implementation('io.micronaut.serde:micronaut-serde-jackson:1.5.2')
+    implementation('io.micronaut.sql:micronaut-jdbc-hikari:4.8.0')
+    implementation "io.micronaut:micronaut-validation:3.4.0"
+    implementation group: 'org.mapstruct', name: 'mapstruct', version: '1.5.5.Final'
+    implementation group: 'org.mapstruct', name: 'mapstruct-processor', version: '1.5.5.Final'
+    implementation('jakarta.validation:jakarta.validation-api:3.0.2')
+    compileOnly("org.projectlombok:lombok")
+    runtimeOnly('ch.qos.logback:logback-classic:1.4.7')
+    runtimeOnly('org.postgresql:postgresql:42.5.4')
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs = [
+            '-parameters'
+    ]
+}
+
+
+application {
+    mainClass.set("com.example.Application")
+}
+java {
+    sourceCompatibility = JavaVersion.toVersion("17")
+    targetCompatibility = JavaVersion.toVersion("17")
+}
+
+graalvmNative.toolchainDetection = false
+micronaut {
+    runtime("netty")
+    testRuntime("junit5")
+    processing {
+        incremental(true)
+        annotations("com.example.*")
+    }
+}
+
+
+

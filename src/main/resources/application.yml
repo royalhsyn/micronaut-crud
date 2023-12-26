@@ -1,0 +1,27 @@
+micronaut:
+  server:
+    host: localhost
+    port: 8081
+  application:
+    name: micronautCrud
+datasources:
+  default:
+    url: jdbc:postgresql://localhost:5432/postgres
+    driver-class-name: org.postgresql.Driver
+    username: admin
+    password: admin
+    db-type: postgres
+    dialect: POSTGRES
+jpa:
+  default:
+    properties:
+      hibernate:
+        bytecode:
+          provider: none
+netty:
+  default:
+    allocator:
+      max-order: 3
+
+
+

@@ -1,0 +1,11 @@
+version: '3'
+services:
+  db:
+    image: library/postgres:latest
+    ports:
+      - "5432:5432"
+    container_name: crud-db-postgres
+    environment:
+      - POSTGRES_DB= crud-db
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=admin
