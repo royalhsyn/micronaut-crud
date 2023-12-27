@@ -12,6 +12,7 @@ import com.example.service.ProductService;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
@@ -30,13 +31,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void save(ProductDto productDto) {
-        Product product=productMap.toEntity(productDto);
-        Optional<Category> category=categoryRepo.findById(productDto.getCategoryId());
-        if(category.isPresent()){
-            product.setCategory(category.get());
-        }
+        Product product = productMap.toEntity(productDto);
+        categoryRepo.findById(productDto.getCategoryId())
+                .ifPresent(product::setCategory);
         productRepo.save(product);
     }
+
 
     @Override
     @Transactional
@@ -68,20 +68,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductDto update(Long id, ProductDto productDto) {
-        Optional<Product> ent=productRepo.findById(id);
-        Product product=null;
-        if (ent.isPresent()){
-            product=ent.get();
-        }
-        product=productMap.toEntity(productDto);
-        product.setId(id);
-        Optional<Category> category=categoryRepo.findById(productDto.getCategoryId());
-        if (category.isPresent()){
-            product.setCategory(category.get());
-
-        }
+    public void update(Long id, ProductDto productDto) {
+        Product product = productRepo.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+        productMap.updateEntityFromDto(productDto, product);
+        categoryRepo.findById(productDto.getCategoryId())
+                .ifPresent(product::setCategory);
         productRepo.save(product);
-        return productDto;
     }
+
 }
